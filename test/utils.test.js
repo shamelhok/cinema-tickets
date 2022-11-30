@@ -1,4 +1,5 @@
-import { isValidAccountId } from "../src/pairtest/lib/utils";
+import TicketTypeRequest from "../src/pairtest/lib/TicketTypeRequest";
+import { extractTickets, isValidAccountId } from "../src/pairtest/lib/utils";
 
 
 describe('isValidAccountId', () => {
@@ -25,3 +26,19 @@ describe('isValidAccountId', () => {
         expect(isValidAccountId({})).toBe(false)
     })
 });
+describe('extractTickets',()=>{
+    test('should return an object with ticket types as keys', () => {
+        expect(extractTickets(new TicketTypeRequest('ADULT',1))).toHaveProperty('ADULT')
+        expect(extractTickets(new TicketTypeRequest('ADULT',1))).toHaveProperty('CHILD')
+        expect(extractTickets(new TicketTypeRequest('ADULT',1))).toHaveProperty('INFANT')
+    });
+    test('should extract correct amount of tickets', () => {
+        let requests = [
+            new TicketTypeRequest('ADULT',10),
+            new TicketTypeRequest('ADULT',1),
+            new TicketTypeRequest('CHILD',0),
+            new TicketTypeRequest('CHILD',3)
+        ]
+        expect(extractTickets(...requests)).toMatchObject({ADULT:11,CHILD:3,INFANT:0})
+    });
+})

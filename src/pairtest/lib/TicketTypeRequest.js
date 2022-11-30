@@ -15,6 +15,10 @@ export default class TicketTypeRequest {
     if (!Number.isInteger(noOfTickets)) {
       throw new TypeError('noOfTickets must be an integer');
     }
+    // number of tickets shouldn't be negative (?)
+    if (noOfTickets<0) {
+      throw new TypeError('noOfTickets must not be negative');
+    }
 
     this.#type = type;
     this.#noOfTickets = noOfTickets;
