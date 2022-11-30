@@ -30,5 +30,8 @@ export function isValidPurchase({ADULT,INFANT,CHILD}){
     if(ADULT< INFANT){
         throw new InvalidPurchaseException('Maximum 1 infant on the lap of each adult')
     }
+    if(ADULT+INFANT+CHILD===0){
+        throw new InvalidPurchaseException('No tickets purchased')
+    }
     return true
 }

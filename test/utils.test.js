@@ -60,6 +60,11 @@ describe('isValidPurchase',()=>{
             isValidPurchase({ADULT:1,INFANT:2,CHILD:0})
         }).toThrow(InvalidPurchaseException)
     });
+    test('should throw error for no tickets', () => {
+        expect(()=>{
+            isValidPurchase({ADULT:0,INFANT:0,CHILD:0})
+        }).toThrow(InvalidPurchaseException)
+    });
     test('should throw error for more than 20 tickets', () => {
         expect(()=>{
             isValidPurchase({ADULT:21,INFANT:0,CHILD:0})
