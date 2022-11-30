@@ -1,5 +1,6 @@
+import InvalidPurchaseException from "../src/pairtest/lib/InvalidPurchaseException";
 import TicketTypeRequest from "../src/pairtest/lib/TicketTypeRequest";
-import { extractTickets, isValidAccountId } from "../src/pairtest/lib/utils";
+import { extractTickets, isValidAccountId, isValidPurchase } from "../src/pairtest/lib/utils";
 
 
 describe('isValidAccountId', () => {
@@ -40,5 +41,41 @@ describe('extractTickets',()=>{
             new TicketTypeRequest('CHILD',3)
         ]
         expect(extractTickets(...requests)).toMatchObject({ADULT:11,CHILD:3,INFANT:0})
+    });
+    test('should throw error if invalid', () => {
+        let requests = [{ADULT:1}
+        ]
+        expect(()=>{extractTickets(...requests)}
+        ).toThrow(InvalidPurchaseException)
+    });
+})
+describe('isValidPurchase',()=>{
+    test('should throw error for no adults but at least one child or infant', () => {
+        expect(()=>{
+            isValidPurchase({ADULT:0,INFANT:1,CHILD:0})
+        }).toThrow(InvalidPurchaseException)
+    });
+    test('should throw error for mote infants than adults', () => {
+        expect(()=>{
+            isValidPurchase({ADULT:1,INFANT:2,CHILD:0})
+        }).toThrow(InvalidPurchaseException)
+    });
+    test('should throw error for more than 20 tickets', () => {
+        expect(()=>{
+            isValidPurchase({ADULT:21,INFANT:0,CHILD:0})
+        }).toThrow(InvalidPurchaseException)
+        expect(()=>{
+            isValidPurchase({ADULT:10,INFANT:10,CHILD:1})
+        }).toThrow(InvalidPurchaseException)
+    });
+    test('should return true for valid purchases', () => {
+        expect(isValidPurchase({ADULT:20,INFANT:0,CHILD:0})
+        ).toBe(true)
+        expect(isValidPurchase({ADULT:1,INFANT:1,CHILD:10})
+        ).toBe(true)
+        expect(isValidPurchase({ADULT:10,INFANT:10,CHILD:0})
+        ).toBe(true)
+        expect(isValidPurchase({ADULT:5,INFANT:2,CHILD:4})
+        ).toBe(true)
     });
 })
